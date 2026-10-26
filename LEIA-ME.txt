@@ -1,0 +1,30 @@
+SITE REDE DESENVOLVI
+====================
+
+Abrir localmente: dê dois cliques em index.html.
+
+O QUE EDITAR
+- assets/js/config.js  -> cidades, telefones, mensagens de WhatsApp, equipe,
+                          depoimentos e parceiros. É o único arquivo que você
+                          precisa mexer no dia a dia.
+- index.html           -> textos fixos (títulos, serviços, perguntas frequentes).
+- assets/css/style.css -> cores e visual.
+
+NOVA CIDADE: em config.js, copie um bloco dentro de "cidades" e altere id, nome,
+uf, local e telefone (DDI+DDD+número, só dígitos).
+
+DEPOIMENTOS: preencha a lista "depoimentos" em config.js. Enquanto estiver
+vazia, a seção não aparece no site.
+
+FOTOS DA EQUIPE: coloque os arquivos em assets/img/equipe/ e informe o caminho
+no campo "foto" de cada pessoa em config.js.
+
+IMAGENS: os originais ficam em IMG/. As versões leves usadas pelo site estão
+em assets/img/.
+
+PUBLICAR: envie esta pasta inteira (index.html + assets) para a hospedagem
+(Cloudflare Pages, Netlify, GitHub Pages ou similar) e aponte o domínio
+desenvolvi.site para ela.
+
+MEDIÇÃO: os botões enviam eventos para window.dataLayer (compatível com Google
+Tag Manager). Basta instalar o GTM/GA4 no <head> do index.html.

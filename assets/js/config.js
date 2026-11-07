@@ -6,7 +6,7 @@
    ========================================================================== */
 window.REDE_CONFIG = {
   marca: {
-    nome: 'Rede DesenvolVi',
+    nome: 'Rede Primeiros Anos',
     instagram: 'https://www.instagram.com/desenvol.vi/',
     instagramUsuario: '@desenvol.vi',
     consultoriaUrl: 'https://www.instagram.com/stories/highlights/18205305811158664/',
@@ -27,9 +27,9 @@ window.REDE_CONFIG = {
 
   /* Mensagens pré-preenchidas do WhatsApp (use {cidade} para inserir a cidade) */
   mensagens: {
-    contato: 'Olá, gostaria de saber mais sobre o DesenvolVi!',
-    aulaExperimental: 'Olá, gostaria de agendar uma aula experimental no DesenvolVi ({cidade})!',
-    parceiro: 'Olá, quero conhecer a Rede DesenvolVi e ser parceiro(a)!'
+    contato: 'Olá, gostaria de saber mais sobre a Rede Primeiros Anos!',
+    aulaExperimental: 'Olá, gostaria de agendar uma aula experimental na Rede Primeiros Anos ({cidade})!',
+    parceiro: 'Olá, quero conhecer a Rede Primeiros Anos e ser parceiro(a)!'
   },
 
   /* Contato comercial da rede (seção "Seja parceiro"). Telefone com DDI+DDD, só números. */

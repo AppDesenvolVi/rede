@@ -1,4 +1,4 @@
-/* Rede DesenvolVi — renderização dirigida pela configuração (config.js) */
+/* Rede Primeiros Anos — renderização dirigida pela configuração (config.js) */
 (function () {
   'use strict';
 

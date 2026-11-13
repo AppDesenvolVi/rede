@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<script>(function(){try{if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;var d=document.documentElement;d.classList.add("intro-on","intro-lock")}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rede Primeiros Anos — Centros de Desenvolvimento Infantil</title>
 <meta name="description" content="O que acontece nos primeiros 1.000 dias muda a vida inteira. Veja como estimular seu filho e como os profissionais da Rede Primeiros Anos podem ajudar, com turmas regulares para bebês e crianças junto com os pais.">
@@ -22,6 +23,15 @@
 </script>
 </head>
 <body>
+<div class="abertura" id="intro" role="dialog" aria-modal="true" aria-label="Vídeo de abertura">
+  <div class="intro-bg" aria-hidden="true" style="background-image:url(assets/video/intro-poster.jpg)"></div>
+  <div class="intro-clip" id="intro-clip"><video id="intro-video" class="intro-video" muted playsinline preload="auto" poster="assets/video/intro-poster.jpg" aria-hidden="true"></video></div>
+  <div class="intro-ctrl">
+    <button type="button" class="intro-btn" id="intro-som" aria-pressed="false" aria-label="Ativar o som do vídeo"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path class="som-on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path class="som-off" d="m16 9 5 6m0-6-5 6"/></svg></button>
+    <button type="button" class="intro-btn" id="intro-pular">Pular abertura <span aria-hidden="true">›</span></button>
+  </div>
+</div>
+<noscript><style>.abertura{display:none!important}html{overflow:auto!important}</style></noscript>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
 <header class="site-header">

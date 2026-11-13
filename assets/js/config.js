@@ -13,6 +13,10 @@ window.REDE_CONFIG = {
     primeiraInfanciaUrl: 'primeira-infancia.html'
   },
 
+  /* Abertura em vídeo (tela cheia). ativo:false desliga.
+     final: 'foto' = o vídeo encolhe e vira a foto do topo; 'video' = o vídeo fica parado no último quadro, no lugar da foto. */
+  intro: { ativo: true, video: 'assets/video/intro.mp4', final: 'video' },
+
   /* Fotos do site. Coloque os arquivos em assets/img/fotos/ e preencha o caminho em "src".
      Deixe src vazio para manter a ilustração (topo) ou ocultar o espaço (demais). */
   fotos: {

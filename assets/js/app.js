@@ -178,11 +178,122 @@
       var img = document.createElement('img');
       var u = urlSegura(item.src); if (!u) return; img.src = u;
       img.alt = item.alt || '';
-      img.loading = 'lazy';
+      img.loading = el.getAttribute('data-foto') === 'hero' ? 'eager' : 'lazy';
       el.innerHTML = '';
       el.appendChild(img);
       el.hidden = false;
     });
+  }
+
+  /* abertura em vídeo: tela cheia; ao terminar (ou ao pular) encolhe até a foto do topo */
+  function initIntro() {
+    var root = document.documentElement, el = $('intro');
+    if (!el) return;
+    var cfg = CFG.intro || {};
+    var src = urlSegura(cfg.video || '');
+    var poupar = !!(navigator.connection && navigator.connection.saveData);
+    if (!root.classList.contains('intro-on') || cfg.ativo === false || !src || poupar) {
+      root.classList.remove('intro-on', 'intro-lock'); el.remove(); return;
+    }
+    var v = $('intro-video'), clip = $('intro-clip'), pular = $('intro-pular'), som = $('intro-som');
+    var encerrado = false, tocou = false, tempo = null;
+    function limpar() { root.classList.remove('intro-on', 'intro-lock'); document.body.classList.remove('site-entra'); if (el.parentNode) el.remove(); }
+    function encerrar(motivo) {
+      if (encerrado) return; encerrado = true;
+      clearTimeout(tempo);
+      try { v.pause(); } catch (e) {}
+      track('intro_' + motivo, tocou ? Math.round(v.currentTime) : 0);
+      root.classList.remove('intro-lock');
+      var de = document.documentElement;
+      function irPara(y) { de.style.scrollBehavior = 'auto'; window.scrollTo(0, y); de.style.scrollBehavior = ''; }
+      irPara(0);
+      var alvo = document.querySelector('.ht-frame');
+      document.body.classList.add('site-entra');
+      el.classList.add('saindo');
+      setTimeout(function () { document.body.classList.remove('site-entra'); }, 2600);
+      if (!alvo) {
+        clip.classList.add('fade');
+        setTimeout(limpar, 900);
+        return;
+      }
+      /* se a moldura não estiver toda visível (celular), rola a página por baixo da abertura até ela */
+      var topoFixo = 0;
+      ['.site-header', '.site-bar'].forEach(function (s) {
+        var n = document.querySelector(s);
+        if (n && getComputedStyle(n).position !== 'static') { var b = n.getBoundingClientRect(); if (b.height && b.bottom > topoFixo && b.top < 5) topoFixo = b.bottom; }
+      });
+      var r = alvo.getBoundingClientRect(), vh = window.innerHeight;
+      if (r.top < topoFixo + 8 || r.bottom > vh - 8) {
+        var desejado = Math.max(topoFixo + 16, (vh - r.height) / 2);
+        var maxY = Math.max(0, de.scrollHeight - vh);
+        irPara(Math.min(maxY, Math.max(0, r.top - desejado)));
+        r = alvo.getBoundingClientRect();
+      }
+      var voltou = false;
+      function cancelarVolta() { voltou = true; }
+      ['touchstart', 'wheel', 'keydown'].forEach(function (ev) { window.addEventListener(ev, cancelarVolta, { once: true, passive: true }); });
+      var cs = getComputedStyle(alvo);
+      var borda = 8, ar = 16 / 9;
+      /* geometria do vídeo dentro da caixa: início = tela cheia (cover no horizontal, contain no vertical); fim = cover dentro da moldura */
+      function geo(w, h, cobrir, px, py) {
+        var largo = w / h > ar, W, H;
+        if (cobrir ? largo : !largo) { W = w; H = w / ar; } else { H = h; W = h * ar; }
+        return { w: W, h: H, l: (w - W) * px, t: (h - H) * py };
+      }
+      var cr = clip.getBoundingClientRect();
+      var g0 = geo(cr.width, cr.height, cr.width >= cr.height, 0.5, 0.5);
+      var g1 = geo(r.width - 2 * borda, r.height - 2 * borda, true, 0.58, 0.5);
+      function px(n) { return n + 'px'; }
+      v.style.cssText = 'position:absolute;object-fit:fill;max-width:none;left:' + px(g0.l) + ';top:' + px(g0.t) + ';width:' + px(g0.w) + ';height:' + px(g0.h);
+      void clip.offsetWidth;
+      var dur = '1.2s cubic-bezier(.65,0,.25,1)';
+      var props = ['left', 'top', 'width', 'height'];
+      clip.style.transition = ['left', 'top', 'width', 'height', 'border-radius', 'border-width', 'box-shadow'].map(function (p) { return p + ' ' + dur; }).join(',');
+      v.style.transition = props.map(function (p) { return p + ' ' + dur; }).join(',');
+      void clip.offsetWidth;
+      clip.style.left = px(r.left); clip.style.top = px(r.top);
+      clip.style.width = px(r.width); clip.style.height = px(r.height);
+      clip.style.borderRadius = cs.borderRadius; clip.style.borderWidth = px(borda);
+      clip.style.boxShadow = '0 28px 60px rgba(11,42,94,.35)';
+      v.style.left = px(g1.l); v.style.top = px(g1.t); v.style.width = px(g1.w); v.style.height = px(g1.h);
+      var feito = false;
+      function pousou() {
+        if (feito) return; feito = true;
+        if (cfg.final === 'video') {
+          alvo.innerHTML = '';
+          v.removeAttribute('style'); v.removeAttribute('aria-hidden'); v.setAttribute('aria-label', 'Vídeo de abertura');
+          v.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:58% 50%;display:block';
+          alvo.appendChild(v);
+          limpar();
+        } else {
+          clip.style.transition = 'opacity .6s ease'; clip.style.opacity = '0';
+          setTimeout(limpar, 650);
+        }
+        /* se a página foi rolada para mostrar a moldura, volta suavemente ao topo, a menos que a pessoa já tenha interagido */
+        if (window.pageYOffset > 4) {
+          setTimeout(function () { if (!voltou && window.pageYOffset > 4) window.scrollTo({ top: 0, behavior: 'smooth' }); }, 1100);
+        }
+      }
+      clip.addEventListener('transitionend', function (e) { if (e.propertyName === 'width' && e.target === clip) pousou(); });
+      setTimeout(pousou, 1600);
+    }
+    v.addEventListener('ended', function () { setTimeout(function () { encerrar('assistiu'); }, 700); });
+    v.addEventListener('error', function () { encerrar('erro'); });
+    v.addEventListener('playing', function () { tocou = true; clearTimeout(tempo); });
+    pular.addEventListener('click', function () { encerrar('pulou'); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') encerrar('pulou'); });
+    som.addEventListener('click', function () {
+      v.muted = !v.muted;
+      var on = !v.muted;
+      som.setAttribute('aria-pressed', on ? 'true' : 'false');
+      som.setAttribute('aria-label', on ? 'Desligar o som do vídeo' : 'Ativar o som do vídeo');
+      if (v.paused && !encerrado) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    });
+    v.src = src;
+    var p = v.play();
+    if (p && p.catch) p.catch(function () { encerrar('bloqueado'); });
+    tempo = setTimeout(function () { if (!tocou) encerrar('lento'); }, 6000);
+    pular.focus({ preventScroll: true });
   }
 
   /* menu hambúrguer (celular) */
@@ -242,6 +353,7 @@
   }
 
   function init() {
+    initIntro();
     initMenu();
     initCasa();
     renderVideos();

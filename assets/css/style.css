@@ -458,3 +458,33 @@ details p{padding:0 0 18px;font-size:17px}
 
 .sec-intro{font-size:18px;line-height:1.6;color:var(--muted);margin:0;max-width:680px}
 .pilar-foto{display:block;width:calc(100% + 56px);max-width:none;margin:-28px -28px 8px;aspect-ratio:16/10;object-fit:cover;border-radius:var(--radius) var(--radius) 0 0}
+
+/* ABERTURA EM VÍDEO: tela cheia -> encolhe até a foto do topo */
+.abertura{display:none;position:fixed;inset:0;z-index:9999;background:#000;overflow:hidden}
+.intro-on .abertura{display:block}
+html.intro-lock{overflow:hidden}
+.intro-bg{position:absolute;inset:-6%;background:center/cover no-repeat;filter:blur(26px) brightness(.65);transition:opacity .6s}
+.intro-clip{position:fixed;left:0;top:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;box-sizing:border-box;border:0 solid rgba(255,255,255,.55);background:#000}
+.intro-video{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+@media (max-aspect-ratio:1/1){.intro-video{object-fit:contain}.intro-clip{background:transparent}}
+.intro-ctrl{position:absolute;right:16px;bottom:16px;display:flex;gap:10px;z-index:2;transition:opacity .3s}
+.intro-btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;justify-content:center;padding:0 18px;border:1px solid rgba(255,255,255,.55);border-radius:999px;background:rgba(0,0,0,.45);color:#fff;font:700 15px var(--font-body,inherit);cursor:pointer;backdrop-filter:blur(6px)}
+.intro-btn:hover,.intro-btn:focus-visible{background:rgba(255,255,255,.22)}
+#intro-som{padding:0}
+#intro-som .som-on{display:none}
+#intro-som[aria-pressed="true"] .som-on{display:inline}
+#intro-som[aria-pressed="true"] .som-off{display:none}
+.abertura.saindo{background:transparent;transition:background .9s ease}
+.abertura.saindo .intro-bg{opacity:0}
+.abertura.saindo .intro-ctrl{opacity:0;pointer-events:none}
+.intro-clip.fade{transition:transform .8s ease,opacity .8s ease;transform:scale(1.06);opacity:0}
+/* o site "monta" enquanto a abertura sai */
+@keyframes sTop{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:none}}
+@keyframes sUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes sFade{from{opacity:0}to{opacity:1}}
+.site-entra .site-header,.site-entra .site-bar{animation:sTop .8s ease both .15s}
+.site-entra .ht-text>*{animation:sUp .8s cubic-bezier(.2,.7,.2,1) both}
+.site-entra .ht-text>*:nth-child(1){animation-delay:.3s}.site-entra .ht-text>*:nth-child(2){animation-delay:.42s}.site-entra .ht-text>*:nth-child(3){animation-delay:.54s}.site-entra .ht-text>*:nth-child(4){animation-delay:.66s}
+.site-entra .ht-art .pill{animation:sFade .7s ease both 1s}
+.site-entra .ht-wave{animation:sFade .8s ease both .5s}
+@media (prefers-reduced-motion:reduce){.abertura{display:none!important}}
